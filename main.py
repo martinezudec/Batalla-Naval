@@ -40,3 +40,38 @@ game_over=False
 sunk_ships=0
 ship_pos=[[]]
 alphabet="ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+
+def ship_placement_validation(start_row,end_row,start_col,end_col):
+    #verificará si es segura la colocación de un barco en esa posición
+    #devolverá True o False
+
+    global sea
+    global ship_pos
+
+    pass
+
+def place_ship_in_sea(row,col,direction,lenght):
+    #dependiendo de la dirección llamará a ship_placement_validation antes de colocar un barco
+    global sea_size
+
+    pass
+
+    return ship_placement_validation(0,0,0,0)
+
+def create_sea():
+    #creará un mar del tamaño especificado y colocará barcos en diferentes direcciones.
+
+    global sea
+    global sea_size
+    global ships_num
+    global ship_pos
+
+    pass
+    
+    place_ship_in_sea(0,0,0,0)
+
+def print_sea():
+    #desplegará el océano
+    global alphabet
+    global sea
+    
