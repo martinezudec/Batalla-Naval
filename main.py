@@ -35,15 +35,7 @@ import time
     "/" = disparo fallido
 """ 
 
-# Inicializar Variables
-sea=[[]]
-sea_size=10
-ships_num=3
-game_over=False
-sunk_ships=0
-ship_pos=[[]]
-alphabet="ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-
+#función de validación
 def read_validate(m,M,txt):
     val=int(input(txt))
     while val<m or val>M:
@@ -51,22 +43,60 @@ def read_validate(m,M,txt):
         val=int(input(txt))
     return val
 
+# Inicializar Variables
+sea=[[]]
+sea_size=read_validate(10,26,'tamaño del tabelero= ')
+ships_num=sea_size
+game_over=False
+sunk_ships=0
+ship_pos=[[]]
+alphabet="ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+
 def ship_placement_validation(start_row,end_row,start_col,end_col):
     #verificará si es segura la colocación de un barco en esa posición
     #devolverá True o False
 
     global sea
     global ship_pos
-
-    pass
+    # verificar si las casillas son validas
+    all_valid=True
+    for i in range(start_row,end_row):
+        for a in range(start_col,end_col):
+            if grid[i][a]!="^":
+                all_valid=False
+                break
+    #si son validas permite crear un barco
+    if all_valid:
+        ship_pos.append([start_row,end_row,start_col,end_col])
+        for i in range(start_row,end_row):
+            for a in range(start_col,end_col):
+                grid[i][a]="O"
+    return all_valid
 
 def place_ship_in_sea(row,col,direction,lenght):
     #dependiendo de la dirección llamará a ship_placement_validation antes de colocar un barco
     global sea_size
 
-    pass
+    start_row,end_row,start_col,end_col=row,row+1,col,col+1
+    if direction=="left":
+        if col-lenght<0:
+            return False
+        start_col=col-lenght+1
 
-    return ship_placement_validation(0,0,0,0)
+    elif direction=="right":
+        if col+lenght>=sea_size:
+            return False
+        end_col=col+lenght
+    elif direction=="up":
+        if row-lenght<0:
+            return False
+        start_row=row-lenght+1
+    elif direction=="down":
+        if row+lenght>=sea_size:
+            return False
+        end_row=row+lenght
+
+    return ship_placement_validation(start_row,end_row,start_col,end_col)
 
 def create_sea():
     #creará un mar del tamaño especificado y colocará barcos en diferentes direcciones.
@@ -76,25 +106,81 @@ def create_sea():
     global ships_num
     global ship_pos
 
-    pass
+    random.seed(time.time())
+    rows,cols=(sea_size,sea_size)
+    #creación del mar
+    sea=[]
+    for i in range(rows):
+        row=[]
+        for a in range(cols):
+            row.append("^")
+        grid.append(row)
+
+    ships_num_placed=0
+
+    ship_pos=[]
     
-    place_ship_in_sea(0,0,0,0)
+    while ships_num_placed !=ships_num:
+        random_row=random.randint(0,rows-1)
+        random_col=random.randint(0,cols-1)
+        direction=random.choice(["left","right","up","down"])
+        ship_size=3
+        if place_ship_in_sea(random_row,random_col,direction,ship_size):
+            ships_num_placed+=1
 
 def print_sea():
     #desplegará el océano
     global sea
     global alphabet
     
-    pass
+    debug_mode=True #modo de pruebas para testear el juego, cuando está apagado no se ven los barcos enemigos
+
+    alphabet=alphabet[0:len(sea)+1] #ajustando el largo del abecedario a el largo del tablero
+    
+    for row in range(len(sea)):
+        print(alphabet[row],end=")")
+        for col in range(len(sea[row])):
+            if sea[row][col]=="O":
+                if debug_mode:
+                    print("O", end=" ")
+                else:
+                    print ("^", end=" ")
+            print("")
 
 def bullet_coord_validation():
     #valida las coordenadas en la que se quiere lanzar el disparo
     global sea
     global alphabet
 
-    pass
-
-    return 0,0
+    valid_shot=False
+    row=-1
+    col=-1
+    while valid_shot is False:
+        placement=input("Ingrese una fila y una columna para disparar de la manera 'A1': ")
+        placement= placement.upper()
+        if len(placement)<=0 or len(placement)>2:
+            print("Error, ingrese coordenadas de la manera 'A1' ")
+            continue
+    row=placement[0]
+    col=placement[1]
+    if not row.isalpha() or not col.isnumeric():
+        print("Error, ingrese coordenadas de la manera 'A1' ")
+        continue
+    row=alphabet.find(row)
+    if not (-1<row<sea_size):
+        print("Error, ingrese coordenadas de la manera 'A1' ")
+        continue
+    col=int(col)
+    if not (-1<col<sea_size):
+        print("Error, ingrese coordenadas de la manera 'A1' ")
+        continue
+    if grid[row][col]=="/" or grid[row][col]=="X":
+        print("Ya disparaste en esta zona, escoge otras coordenadas")
+        continue
+    if grid[row][col]=="^" or grid[row][col]=="O":
+        valid_shot=True
+    
+    return row,col
 
 def check_sunk_ship(row,col):
     #si todas las partes del barco recibieron disparos, el barco está hundido
