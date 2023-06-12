@@ -1,3 +1,6 @@
+import random
+import time
+
 """
     Restricciones del juego:
     * Tablero de N x N (N >= 10).
@@ -16,8 +19,8 @@
     números que representan las coordenadas de los disparos. El programa debe indicar si se trata de un impacto o
     agua y debe generar los registros correspondientes.
 
-    ->Cada una de estas entradas deben ser validadas o en el caso de la informaci ́on de las naves y coordenadas de
-    los disparos se deben ajustar al tamaño del tablero. En el caso que los valores no est ́en dentro de los rangos
+    ->Cada una de estas entradas deben ser validadas o en el caso de la información de las naves y coordenadas de
+    los disparos se deben ajustar al tamaño del tablero. En el caso que los valores no estén dentro de los rangos
     establecidos, se debe indicar el error y permitir un nuevo ingreso de datos.<-
     
     Salidas:
@@ -40,6 +43,13 @@ game_over=False
 sunk_ships=0
 ship_pos=[[]]
 alphabet="ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+
+def read_validate(m,M,txt):
+    val=int(input(txt))
+    while val<m or val>M:
+        print(f'Error, el valor debe estar entre {m} y {M}')
+        val=int(input(txt))
+    return val
 
 def ship_placement_validation(start_row,end_row,start_col,end_col):
     #verificará si es segura la colocación de un barco en esa posición
@@ -72,6 +82,52 @@ def create_sea():
 
 def print_sea():
     #desplegará el océano
-    global alphabet
     global sea
+    global alphabet
     
+    pass
+
+def bullet_coord_validation():
+    #valida las coordenadas en la que se quiere lanzar el disparo
+    global sea
+    global alphabet
+
+    pass
+
+    return 0,0
+
+def check_sunk_ship(row,col):
+    #si todas las partes del barco recibieron disparos, el barco está hundido
+    #devuelve True o Flase
+    global ship_pos
+    global sea
+
+    pass
+
+def shoots():
+    #actualiza el mar dependiendo de donde se ha disparado
+    global sea
+    global sunk_ships
+    
+    row,col=bullet_coord_validation()
+
+    pass
+
+def game_over_check():
+    #si todos los barcos han sido hundidos el juego se acaba
+    global sunk_ships
+    global ships_num
+    global game_over
+
+    pass
+
+def main():
+    #inicia el loop del juego 
+    global game_over
+
+    pass
+
+if __name__ == '__main__':
+    '''solo se pedirá cuando el programa corra a través de terminal o IDE'''
+
+    main()
