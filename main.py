@@ -197,7 +197,7 @@ def check_sunk_ship(row,col):
             #chequea si está hundido completamente
             for i in range(start_row,end_row):
                 for a in range(start_col,end_col):
-                    if sea[r][c]!="X":
+                    if sea[i][a]!="X":
                         return False
     return True
 
@@ -213,7 +213,14 @@ def shoots():
     if sea[row][col]=="^":
         print("Disparo al agua!")
         sea[row][col]="/"
-    elif sea[row][col]
+    elif sea[row][col]=="O":
+        print("Le has dado!", end=" ")
+        sea[row][col]="X"
+        if check_sunk_ship(row,col):
+            print("Has hundido un barco!")
+            sunk_ships+=1
+        else:
+            print("Le has dado a un barco!")
 
 def game_over_check():
     #si todos los barcos han sido hundidos el juego se acaba
@@ -221,13 +228,27 @@ def game_over_check():
     global ships_num
     global game_over
 
+    if ships_num==sunk_ships:
+        print("Felicidades, has ganado!")
+        game_over=True
 
 def main():
     #inicia el loop del juego 
     global game_over
 
-    pass
-
+    print("-----Batalla Naval-----")
+    print("Profe porfa denos un 7.0")
+    
+    create_sea()
+    
+    while game_over is False:
+        print_sea()
+        print("Barcos restantes: "+str(ships_num-sunk_ships))
+        shoots()
+        print("----------------------------")
+        print("")
+        game_over_check()
+        
 if __name__ == '__main__':
     '''solo se pedirá cuando el programa corra a través de terminal o IDE'''
 
