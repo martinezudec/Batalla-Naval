@@ -149,7 +149,7 @@ def print_sea():
                 print(sea[row][col],end=" ")
         print("")
                 
-    print("  ",end=" ")
+    print(" ",end=" ")
     for i in range(len(sea[0])):
         print(str(i),end=" ")
     print("")
