@@ -62,7 +62,7 @@ def ship_placement_validation(start_row,end_row,start_col,end_col):
     all_valid=True
     for i in range(start_row,end_row):
         for a in range(start_col,end_col):
-            if grid[i][a]!="^":
+            if sea[i][a]!="^":
                 all_valid=False
                 break
     #si son validas permite crear un barco
@@ -70,7 +70,7 @@ def ship_placement_validation(start_row,end_row,start_col,end_col):
         ship_pos.append([start_row,end_row,start_col,end_col])
         for i in range(start_row,end_row):
             for a in range(start_col,end_col):
-                grid[i][a]="O"
+                sea[i][a]="O"
     return all_valid
 
 def place_ship_in_sea(row,col,direction,lenght):
@@ -114,7 +114,7 @@ def create_sea():
         row=[]
         for a in range(cols):
             row.append("^")
-        grid.append(row)
+        sea.append(row)
 
     ships_num_placed=0
 
@@ -197,7 +197,7 @@ def check_sunk_ship(row,col):
             #chequea si está hundido completamente
             for i in range(start_row,end_row):
                 for a in range(start_col,end_col):
-                    if grid[r][c]!="X":
+                    if sea[r][c]!="X":
                         return False
     return True
 
@@ -210,7 +210,10 @@ def shoots():
     print("")
     print("----------------------------")
     
-    pass
+    if sea[row][col]=="^":
+        print("Disparo al agua!")
+        sea[row][col]="/"
+    elif sea[row][col]
 
 def game_over_check():
     #si todos los barcos han sido hundidos el juego se acaba
