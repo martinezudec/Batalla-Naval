@@ -142,11 +142,18 @@ def print_sea():
         for col in range(len(sea[row])):
             if sea[row][col]=="O":
                 if debug_mode:
-                    print("O", end=" ")
+                    print("O",end=" ")
                 else:
-                    print ("^", end=" ")
-            print("")
-
+                    print ("^",end=" ")
+            else:
+                print(sea[row][col],end=" ")
+        print("")
+                
+    print("  ",end=" ")
+    for i in range(len(sea[0])):
+        print(str(i),end=" ")
+    print("")
+        
 def bullet_coord_validation():
     #valida las coordenadas en la que se quiere lanzar el disparo
     global sea
