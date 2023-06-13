@@ -161,25 +161,25 @@ def bullet_coord_validation():
         if len(placement)<=0 or len(placement)>2:
             print("Error, ingrese coordenadas de la manera 'A1' ")
             continue
-    row=placement[0]
-    col=placement[1]
-    if not row.isalpha() or not col.isnumeric():
-        print("Error, ingrese coordenadas de la manera 'A1' ")
-        continue
-    row=alphabet.find(row)
-    if not (-1<row<sea_size):
-        print("Error, ingrese coordenadas de la manera 'A1' ")
-        continue
-    col=int(col)
-    if not (-1<col<sea_size):
-        print("Error, ingrese coordenadas de la manera 'A1' ")
-        continue
-    if grid[row][col]=="/" or grid[row][col]=="X":
-        print("Ya disparaste en esta zona, escoge otras coordenadas")
-        continue
-    if grid[row][col]=="^" or grid[row][col]=="O":
-        valid_shot=True
-    
+        row=placement[0]
+        col=placement[1]
+        if not row.isalpha() or not col.isnumeric():
+            print("Error, ingrese coordenadas de la manera 'A1' ")
+            continue
+        row=alphabet.find(row)
+        if not (-1<row<sea_size):
+            print("Error, ingrese coordenadas de la manera 'A1' ")
+            continue
+        col=int(col)
+        if not (-1<col<sea_size):
+            print("Error, ingrese coordenadas de la manera 'A1' ")
+            continue
+        if sea[row][col]=="/" or sea[row][col]=="X":
+            print("Ya disparaste en esta zona, escoge otras coordenadas")
+            continue
+        if sea[row][col]=="^" or sea[row][col]=="O":
+            valid_shot=True
+
     return row,col
 
 def check_sunk_ship(row,col):
@@ -188,7 +188,18 @@ def check_sunk_ship(row,col):
     global ship_pos
     global sea
 
-    pass
+    for position in ship_pos:
+        start_row=position[0]
+        end_row=position[1]
+        start_col=position[2]
+        end_col=position[3]
+        if start_row<=row<=end_row and start_col<=col<=end_col:
+            #chequea si está hundido completamente
+            for i in range(start_row,end_row):
+                for a in range(start_col,end_col):
+                    if grid[r][c]!="X":
+                        return False
+    return True
 
 def shoots():
     #actualiza el mar dependiendo de donde se ha disparado
@@ -196,7 +207,9 @@ def shoots():
     global sunk_ships
     
     row,col=bullet_coord_validation()
-
+    print("")
+    print("----------------------------")
+    
     pass
 
 def game_over_check():
@@ -205,7 +218,6 @@ def game_over_check():
     global ships_num
     global game_over
 
-    pass
 
 def main():
     #inicia el loop del juego 
