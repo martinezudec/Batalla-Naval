@@ -64,21 +64,15 @@ try:
 
     game_over=False
     sunk_ships=0
-    ship_pos=[[]]
+    ship_position=[]
     alphabet="ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 
-    def ship_placement_validation(start_row, start_column):
-        #verificará si es seguro poner un barco en esa posición
-        #devolverá True o False
-        global sea
-        global ship_pos
-        # verificar si las casillas son validas
-        
+   
 
     def place_ship_in_sea(row, column, direction):
         #dependiendo de la dirección llamará a ship_placement_validation antes de colocar un barco
         global sea_size
-        global ship_pos
+        global ship_position
 
         start_row = row
         end_row = row
@@ -111,6 +105,7 @@ try:
 
         # crear barco si las coordenadas son validas
         if all_valid:
+            ship_position.append([start_row, end_row, start_column, end_column])
             
             for i in range(start_row, end_row + 1):
                 for a in range(start_column, end_column + 1):
@@ -192,32 +187,34 @@ try:
         global alphabet
 
         valid_shot=False
-        row =- 1
-        column =- 1
-
         while valid_shot is False:
             placement=input("Ingrese una fila y una columnumna para disparar de la manera 'A1': ")
             placement= placement.upper()
-            if len(placement)<=0 or len(placement)>2:
+            if len(placement) <= 0 or len(placement)> 3: # revisar que no sea vacio o demasiado grande
                 print("Error, ingrese coordenadas de la manera 'A1' ")
                 continue
-            row=placement[0]
-            column=placement[1]
-            if not row.isalpha() or not column.isnumeric():
+
+            row = placement[0]
+            column = placement[1:]
+
+            if not row.isalpha() or not column.isnumeric(): # revisar que sean letra y número
                 print("Error, ingrese coordenadas de la manera 'A1' ")
                 continue
-            row=alphabet.find(row)
-            if not (-1<row<sea_size):
-                print("Error, ingrese coordenadas de la manera 'A1' ")
+
+            row = alphabet.find(row)
+            column = int(column)
+
+            if not (-1 < row < sea_size):
+                print("Error, La fila no esta dentro del rango del tablero. ")
                 continue
-            column=int(column) - 1
-            if not (-1<column<sea_size):
-                print("Error, ingrese coordenadas de la manera 'A1' ")
+            column = int(column) - 1
+            if not (-1 < column < sea_size):
+                print("Error, la columna no esta dentro del rango del tablero")
                 continue
-            if sea[row][column]=="/" or sea[row][column]=="X":
+            if sea[row][column] == "/" or sea[row][column] == "X":
                 print("Ya disparaste en esta zona, escoge otras coordenadas")
                 continue
-            if sea[row][column]=="^" or sea[row][column]=="O":
+            if sea[row][column] == "^" or sea[row][column] == "O":
                 valid_shot=True
 
         return row,column
@@ -225,20 +222,23 @@ try:
     def check_sunk_ship(row,column):
         #si todas las partes del barco recibieron disparos, el barco está hundido
         #devuelve True o Flase
-        global ship_pos
+        global ship_position
         global sea
 
-        for position in ship_pos:
-            start_row=position[0]
-            end_row=position[1]
-            start_column=position[2]
-            end_column=position[3]
-            if start_row<=row<=end_row and start_column<=column<=end_column:
-                #chequea si está hundido completamente
-                for i in range(start_row,end_row):
-                    for a in range(start_column,end_column):
+        for ship in ship_position:
+
+            start_row = ship[0]
+            end_row = ship[1]
+            start_column = ship[2]
+            end_column = ship[3]
+
+            if start_row <= row <= end_row and start_column <= column <= end_column:
+                # ve si el barco ha recibido tres disparos
+                for i in range(start_row, end_row + 1):
+                    for a in range(start_column, end_column + 1):
                         if sea[i][a]!="X":
                             return False
+
         return True
 
     def shoots():
@@ -250,15 +250,18 @@ try:
         print("")
         print("----------------------------")
         
-        if sea[row][column]=="^":
+        if sea[row][column] == "^":
             print("Disparo al agua!")
             sea[row][column]="/"
-        elif sea[row][column]=="O":
+
+        elif sea[row][column] == "O":
             print("Le has dado!", end=" ")
             sea[row][column]="X"
+
             if check_sunk_ship(row,column):
                 print("Has hundido un barco!")
-                sunk_ships+=1
+                sunk_ships += 1
+
             else:
                 print("Le has dado a un barco!")
 
