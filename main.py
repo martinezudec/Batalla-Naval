@@ -388,4 +388,4 @@ def main():
         turn += 1   
             
 main()
-input("FIN")
+input("GAME OVER")
