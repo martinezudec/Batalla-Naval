@@ -1,5 +1,5 @@
 import os, random, time, math
-
+os.system("cls")
 """     
     Restricciones del juego:
     * Tablero de N x N (N >= 10).
@@ -34,6 +34,8 @@ import os, random, time, math
     "/" = disparo fallido
 """ 
 
+debug_mode=False
+
 #función de validación
 def read_validate(m,M,txt):
     while True:  
@@ -51,14 +53,26 @@ def read_validate(m,M,txt):
 
     return val
 
-# Inicializar Variables
+input("""
+                -----BATALLA NAVAL-----
+       _           _   _   _           _     _       
+      | |         | | | | | |         | |   (_)      
+      | |__   __ _| |_| |_| | ___  ___| |__  _ _ __  
+      | '_ \ / _` | __| __| |/ _ \/ __| '_ \| | '_ \ 
+      | |_) | (_| | |_| |_| |  __/\__ \ | | | | |_) |
+      |_.__/ \__,_|\__|\__|_|\___||___/_| |_|_| .__/ 
+                                            | |    
+                                            |_| 
 
+           ---PRESIONA ENTER PARA COMENZAR---
+                                            """)
+
+# Inicializar Variables
 sea=[]
 sea_size=read_validate(10, 1000, 'tamaño del tablero: ')
 ships_num = read_validate(3, sea_size, "Ingrese número de barcos: ")
 ship_position=[]
 sunk_ships = 0
-
 user_sea = []
 user_ship_position = []
 user_sunk_ships = 0
@@ -66,11 +80,10 @@ user_sunk_ships = 0
 
 
 game_over=False
-alphabet="ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 
 
 
-def place_ship_in_sea(row, column, direction, arr, ship_pos):
+def place_ship_in_sea(row, column, direction, arr, ship_pos, User):
     #dependiendo de la dirección llamará a ship_placement_validation antes de colocar un barco
     global sea_size
 
@@ -82,24 +95,28 @@ def place_ship_in_sea(row, column, direction, arr, ship_pos):
     if direction == "horizontal":
         if column < 0 and column + 2 >= sea_size:
             return False
-        start_column = column 
-        end_column = column + 2
+        start_column = column -1
+        end_column = column + 1
 
     elif direction == "vertical":
         if row < 0 and row + 2 >= sea_size:
             return False
-        start_row = row
-        end_row = row + 2
+        start_row = row -1
+        end_row = row + 1
 
     all_valid=True
     # ver que el index en sea exista
     for i in range(start_row, end_row + 1):
         for a in range(start_column, end_column + 1):
-            if i >= len(arr) or a >= len(arr[i]):
+            if i >= len(arr) or a >= len(arr[i]) or a<0 or i<0:
                 all_valid = False
+                if User:
+                    print("Barco fuera de rango")
                 break
             if arr[i][a] != "^":
                 all_valid = False
+                if User:
+                    print("No se puede colocar un barco aquí")
                 break
         
 
@@ -141,7 +158,7 @@ def create_sea(arr, ship_pos, randomize):
             column = random.randint(0, sea_size - 1)
             direction = random.choice(["horizontal", "vertical"])
 
-            if place_ship_in_sea(row, column, direction, arr,  ship_pos):
+            if place_ship_in_sea(row, column, direction, arr,  ship_pos, False):
                 ships_num_placed += 1
             
 
@@ -160,17 +177,17 @@ def create_sea(arr, ship_pos, randomize):
             row = int(input("Ingrese fila del barco: ")) - 1
             column = int(input("Ingrese columna del barco: ")) - 1
             
-            if place_ship_in_sea(row, column, direction, arr,  ship_pos):
+            if place_ship_in_sea(row, column, direction, arr,  ship_pos, True):
                 ships_num_placed += 1
                 print_sea(arr)
                 
 def print_sea(arr):
     #desplegará el océano
     
-    debug_mode = False    #modo de pruebas para testear el juego, cuando está apagado no se ven los barcos enemigos
+    global debug_mode #modo de pruebas para testear el juego, cuando está apagado no se ven los barcos enemigos
        
-
-    for row in range(len(arr)):
+    os.system("cls")
+    for row in range(len(arr)): 
         space = 10**row  
         
         if row + 1 < 10:
@@ -180,10 +197,13 @@ def print_sea(arr):
 
         for column in range(len(arr[row])):
             if arr[row][column]=="O":
-                if debug_mode or arr == user_sea:
+                if arr == user_sea:
                     string_r = string_r + "   " + "O"
                 else:
-                    string_r = string_r + "   " + "^"
+                    if debug_mode and arr == sea:
+                        string_r = string_r + "   " + "O"
+                    else:
+                        string_r = string_r + "   " + "^"
             else:
                 string_r = string_r + "   " + arr[row][column]
 
@@ -197,6 +217,7 @@ def print_sea(arr):
             string_c = string_c + "   " + str(i + 1) 
         else:
             string_c = string_c + "  " + str(i + 1)
+            
     print(string_c)
         
 def bullet_coord_validation():
@@ -340,25 +361,23 @@ def game_over_check():
     global game_over
 
     if ships_num == sunk_ships:
-        print("Felicidades, has ganado!")
         game_over=True
-    
-    if ships_num == user_sunk_ships:
-        print("Derrota. Han hundido todos tus barcos.")
+        win=True
+    elif ships_num == user_sunk_ships:
+        game_over=True
+        win=False
 
 
 def main():
     #inicia el loop del juego 
     global game_over
     
-    print("-----BATALLA NAVAL-----")
-
     create_sea(sea, ship_position, True)
     print_sea(sea)
     print("--------------------------------------------------------------------------------")
     create_sea(user_sea, user_ship_position, False)
     print_sea(user_sea)
-    input("Presiona una tecla para continuar...")
+    input("Presiona una Enter para continuar...")
     
     turn = 1
     while game_over is False:
@@ -372,20 +391,45 @@ def main():
 
             print("__________________________________\n         tablero enemigo\n__________________________________")
             print_sea(sea)
-            input("Presiona una tecla para continuar...")
+            input("Presiona una Enter para continuar...")
 
         else: # turno computador        
             os.system("cls")
             print("__________________________________\n         turno del computador\n__________________________________")
-            
+            print(user_sea)
+            print("Barcos restantes: " + str(ships_num - sunk_ships))
             computer_shot()
             print("__________________________________\n         tu tablero\n__________________________________")
             print_sea(user_sea)
-            input("Presiona una tecla para continuar...")
+            input("Presiona una Enter para continuar...")
             
         
         game_over_check()
         turn += 1   
             
 main()
-input("GAME OVER")
+os.system("cls")
+if win:
+    print("""Felicidades, has ganado!
+                   |    |    |                 
+                  )_)  )_)  )_)              
+                 )___))___))___)\            
+                )____)____)_____)\\
+              _____|____|____|____\\\__
+     ---------\                   /---------
+       ^^^^^ ^^^^^^^^^^^^^^^^^^^^^
+         ^^^^      ^^^^     ^^^    ^^
+              ^^^^      ^^^
+         """)
+else:
+    print("""Derrota. Han hundido todos tus barcos
+                   |    |    |                 
+                  )_)  )_)  )_)              
+                 )___))___))___)\            
+                )____)____)_____)\\
+              _____|____|____|____\\\__
+     ---------\                   /---------
+       ^^^^^ ^^^^^^^^^^^^^^^^^^^^^
+         ^^^^      ^^^^     ^^^    ^^
+              ^^^^      ^^^
+         """)
