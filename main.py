@@ -1,4 +1,7 @@
-import os, random, time, math
+import os
+import random
+import time
+import math
 os.system("cls")
 """     
     Restricciones del juego:
@@ -152,7 +155,6 @@ def create_sea(arr, ship_pos, randomize):
     ships_num_placed = 0
 
     while ships_num_placed != ships_num:
-                
         if randomize:
             row = random.randint(0, sea_size - 1 )
             column = random.randint(0, sea_size - 1)
@@ -164,7 +166,6 @@ def create_sea(arr, ship_pos, randomize):
 
         else:
             direction = input("Direccion del barco, vertical o horizontal (V/H): ").lower()
-            
             while direction != "v" and direction != "h":
                 direction = input("Valor invalido. Ingresar vertical o horizontal de la forma V o H: ").lower()
             
@@ -173,14 +174,31 @@ def create_sea(arr, ship_pos, randomize):
             elif direction == "h":
                 direction = "horizontal"
 
-        # falta verificar entrada /////////////////////////////////////////////////////////////////////////////////////////////////
-            row = int(input("Ingrese fila del barco: ")) - 1
-            column = int(input("Ingrese columna del barco: ")) - 1
-            
-            if place_ship_in_sea(row, column, direction, arr,  ship_pos, True):
+            valid_row_input = False
+            while not valid_row_input:
+                try:
+                    row = int(input("Ingrese fila del barco: ")) - 1
+                    if 0 <= row < sea_size:
+                        valid_row_input = True
+                    else:
+                        print("El valor de fila debe estar dentro del rango del mar.")
+                except ValueError:
+                    print("Entrada inválida. Ingrese un número válido para la fila.")
+
+            valid_column_input = False
+            while not valid_column_input:
+                try:
+                    column = int(input("Ingrese columna del barco: ")) - 1
+                    if 0 <= column < sea_size:
+                        valid_column_input = True
+                    else:
+                        print("El valor de columna debe estar dentro del rango del mar.")
+                except ValueError:
+                    print("Entrada inválida. Ingrese un número válido para la columna.")
+
+            if place_ship_in_sea(row, column, direction, arr, ship_pos, True):
                 ships_num_placed += 1
                 print_sea(arr)
-                
 def print_sea(arr):
     #desplegará el océano
     
@@ -200,7 +218,7 @@ def print_sea(arr):
                 if arr == user_sea:
                     string_r = string_r + "   " + "O"
                 else:
-                    if debug_mode and arr == sea:
+                    if debug_mode == True and arr == sea:
                         string_r = string_r + "   " + "O"
                     else:
                         string_r = string_r + "   " + "^"
